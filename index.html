@@ -1,5 +1,6 @@
 <!doctype html>
-<script type="module" crossorigin src="./assets/index-CK_z8DMW.js"></script>
+<html lang="en">
+<script type="module" crossorigin src="./assets/index-BnfK7MGr.js"></script>
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -29,6 +30,7 @@
   html, body { margin: 0; height: 100%; overflow: hidden; background: #84bea2; }
   body { font: 13px/1.5 ui-sans-serif, -apple-system, system-ui, sans-serif; color: var(--ink); }
   canvas { display: block; touch-action: none; }
+  #viewport { display: block; }
 
   /* chrome sits over the canvas but must never eat a drag on the field */
   .chrome { position: fixed; inset: 0; pointer-events: none; z-index: 2; }
@@ -230,6 +232,8 @@
     #loading .arena { opacity: 1 } #loading .pad { transform: scale(1) }
   }
 </style>
+
+<main id="viewport" aria-label="Ditto playground"></main>
 
 <div class="chrome">
   <div id="masthead">
