@@ -7,19 +7,19 @@ the camera, flatten under his weight and spring back a few seconds after he
 walks on.
 
 **[jeramai.github.io/ditto](https://jeramai.github.io/ditto/)** · try
-[`?shiny`](https://jeramai.github.io/ditto/?shiny) · `?cage=1` draws the
-physics cage.
+[`?shiny`](https://jeramai.github.io/ditto/?shiny) · `?hud=1` shows the frame
+and solver readout.
 
-Wander with WASD, hop with space, drag him with the mouse. Turning the sound on
-starts something.
+Wander with WASD. Tap space to hop, or stand still and hold it — he squishes,
+and the deeper the squish the higher he goes. Drag him to stretch him, drag the
+field to orbit. Turning the sound on starts something.
+
+This is our own engine: the solver, the skinning, the world and the interface
+are all ours, on top of three.js. Nothing of the toy that inspired it remains.
 
 ## Credits
 
-Ditto is a Pokémon, owned by Nintendo, Creatures and Game Freak. The soft-body
-world this is built on is [jelly baby](https://jelly.scottsun.io) by Scott Sun.
-The dancing sprite and the idea of setting it to a conga come from
+Ditto is a Pokémon, owned by Nintendo, Creatures and Game Freak. The dancing
+sprite and the idea of setting it to a conga come from
 [matias.me/nsfw](https://matias.me/nsfw/), and the track is "Conga" by Gloria
 Estefan and Miami Sound Machine.
-
-A personal, non-commercial fan project. None of the above is mine, and none of
-it is licensed for redistribution.
