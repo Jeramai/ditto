@@ -1,27 +1,306 @@
 <!doctype html>
-<!-- Ditto is a Pokemon owned by Nintendo / Creatures / Game Freak. Local, non-commercial use. -->
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#c8d6b0" />
-    <meta name="description" content="A small, soft world. Wander, hop, stretch, and let go." />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Ditto" />
-    <meta property="og:description" content="A small, soft world. Wander, hop, stretch, and let go." />
-    <meta property="og:image" content="./og_image.jpg" />
-    <meta property="og:image:alt" content="Ditto" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Ditto" />
-    <meta name="twitter:description" content="A small, soft world. Wander, hop, stretch, and let go." />
-    <meta name="twitter:image" content="./og_image.jpg" />
-    <title>Ditto</title>
-    <script type="module" crossorigin src="./assets/index-B_rmCXFl.js?b=7fd0939f"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-NajdQ5bO.css?b=7fd0939f">
-  </head>
-  <body>
-    <div id="app"></div>
-    <noscript>Ditto needs JavaScript and a WebGPU-capable browser.</noscript>
-  </body>
-</html>
+<script type="module" crossorigin src="./assets/index-CK_z8DMW.js"></script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#84bea2">
+<title>Ditto</title>
+<meta name="description" content="A small, soft world. Wander, hop, stretch, and let go.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ditto">
+<meta property="og:description" content="A small, soft world. Wander, hop, stretch, and let go.">
+<meta property="og:image" content="./og_image.jpg">
+<meta property="og:image:alt" content="Ditto">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ditto">
+<meta name="twitter:description" content="A small, soft world. Wander, hop, stretch, and let go.">
+<meta name="twitter:image" content="./og_image.jpg">
+<link rel="icon" href="./favicon-0.png">
+<style>
+  :root {
+    color-scheme: light;
+    --ditto: #c99ae2;
+    --ink: #2f3a34;
+    --paper: #fbf8f2;
+    --dim: #6b7a70;
+    --safe-b: env(safe-area-inset-bottom, 0px);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #84bea2; }
+  body { font: 13px/1.5 ui-sans-serif, -apple-system, system-ui, sans-serif; color: var(--ink); }
+  canvas { display: block; touch-action: none; }
+
+  /* chrome sits over the canvas but must never eat a drag on the field */
+  .chrome { position: fixed; inset: 0; pointer-events: none; z-index: 2; }
+  .chrome > * { pointer-events: auto; }
+
+  #masthead { position: absolute; top: calc(14px + env(safe-area-inset-top)); left: 26px;
+              display: grid; gap: 0; }
+  .eyebrow { margin: 0; font-size: 9px; text-transform: uppercase; letter-spacing: .22em;
+             color: #3f4a44; text-shadow: 0 1px 0 #ffffff55; }
+  .eyebrow[lang="ja"] { text-transform: none; letter-spacing: .06em; font-size: 10px; }
+  #name { all: unset; display: block; cursor: pointer; margin-top: -4px;
+          font: italic 400 44px/1 Georgia, "Times New Roman", serif;
+          letter-spacing: -.055em; color: #453449; text-shadow: 0 1px 0 #ffffff44; }
+  #name:hover { opacity: .72; }
+  #name b { color: var(--ditto); font-weight: inherit; }
+  #name[lang="ja"] { font: 600 27px/1.1 ui-sans-serif, -apple-system, sans-serif;
+                     letter-spacing: 0; }
+
+  #tools { position: absolute; top: calc(14px + env(safe-area-inset-top)); right: 14px;
+           display: flex; gap: 6px; }
+  #tools button { width: 34px; height: 34px; display: grid; place-items: center;
+                  border: 0; border-radius: 10px; cursor: pointer; color: var(--ink);
+                  background: #fbf8f2b8; backdrop-filter: blur(3px); }
+  #tools button:hover { background: var(--paper); }
+  #tools button[aria-pressed="true"] { background: var(--ditto); color: var(--paper); }
+  #tools svg { width: 17px; height: 17px; fill: none; stroke: currentColor;
+               stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  #form-dot { width: 13px; height: 13px; border-radius: 50%; background: var(--ditto);
+              box-shadow: 0 0 0 1.5px #ffffffcc inset; }
+
+  /* Key caps rather than a sentence, and it stays: it is the only place the
+     controls are written down. Hidden on touch, where the pad speaks for itself. */
+  #hint { position: absolute; left: 26px; bottom: calc(30px + var(--safe-b));
+          display: flex; align-items: center; gap: 9px; font-size: 11px;
+          color: #4b3750bd; }
+  body.touch #hint { display: none; }
+  #hint kbd { display: grid; place-items: center; min-width: 19px; height: 19px;
+              padding: 0 4px; font: 500 9px/1 ui-sans-serif, sans-serif;
+              border: 1px solid #57405c40; border-radius: 4px;
+              background: #f9f4e530; color: inherit; }
+  #hint .wasd { display: grid; gap: 2px; justify-items: center; }
+  #hint .wasd span { display: flex; gap: 2px; }
+  #hint .sep { width: 1px; height: 18px; background: #57405c26; }
+  #hint svg.mouse { width: 15px; height: 19px; fill: none; stroke: currentColor;
+                    stroke-width: 1.4; }
+
+  /* --- touch controls: only on a device that has no mouse ---------------- */
+  #touch { display: none; }
+  body.touch #touch { display: block; }
+  #stick { position: absolute; left: 22px; bottom: calc(26px + var(--safe-b));
+           width: 116px; height: 116px; border-radius: 50%;
+           background: #fbf8f26e; backdrop-filter: blur(2px); touch-action: none; }
+  #knob { position: absolute; left: 50%; top: 50%; width: 46px; height: 46px;
+          margin: -23px 0 0 -23px; border-radius: 50%;
+          background: color-mix(in srgb, var(--ditto) 78%, transparent);
+          box-shadow: 0 1px 6px #2f3a3428; }
+  #hop { position: absolute; right: 26px; bottom: calc(34px + var(--safe-b));
+         width: 78px; height: 78px; border-radius: 50%; border: 0; cursor: pointer;
+         font: 600 12px/1 ui-sans-serif, sans-serif; letter-spacing: .1em;
+         text-transform: uppercase; color: var(--ink);
+         background: #fbf8f28c; backdrop-filter: blur(2px); touch-action: none; }
+  #hop.held { background: color-mix(in srgb, var(--ditto) 70%, transparent); }
+
+  /* --- credits ---------------------------------------------------------- */
+  /* Geometrically centred and it still reads as sitting low, which is the usual
+     optical-centre effect, so lift it a little. Measured 243.5 px above and
+     below before this. */
+  #credits { position: relative; border: 0; border-radius: 14px; padding: 0;
+             max-width: min(430px, 90vw); background: var(--paper); color: var(--ink);
+             box-shadow: 0 18px 44px #2f3a3433; translate: 0 -4vh; }
+  #credits::backdrop { background: #2f3a3459; backdrop-filter: blur(2px); }
+  #credits > * { margin: 0; }
+  .credits-title { padding: 17px 44px 0 20px; font: 600 15px/1 ui-sans-serif, sans-serif;
+                   letter-spacing: .02em; }
+  #credits ul { list-style: none; padding: 14px 20px 4px; display: grid; gap: 11px; }
+  #credits li { display: grid; gap: 2px; font-size: 12px; }
+  #credits li span { font-size: 9px; text-transform: uppercase; letter-spacing: .14em;
+                     color: var(--dim); }
+  #credits a { color: #8d4b84; text-decoration-thickness: .5px; text-underline-offset: 2px; }
+  #credits em { font-style: normal; }
+  .credits-note { padding: 8px 20px 18px; font-size: 10px; line-height: 1.5; color: var(--dim); }
+  #credits-close { position: absolute; top: 9px; right: 9px; width: 28px; height: 28px;
+                   padding: 0; display: grid; place-items: center; border: 0;
+                   border-radius: 8px; background: transparent; color: var(--dim);
+                   cursor: pointer; }
+  #credits-close:hover { background: #2f3a3414; color: var(--ink); }
+  #credits :focus-visible, #tools :focus-visible, #name:focus-visible {
+    outline: 2px solid var(--ditto); outline-offset: 2px; border-radius: 6px; }
+  #credits :focus:not(:focus-visible) { outline: none; }
+  #credits-close svg { width: 15px; height: 15px; fill: none; stroke: currentColor;
+                       stroke-width: 1.8; stroke-linecap: round; }
+
+  /* --- the entrance ----------------------------------------------------- */
+  /* A Gen-3 battle intro, ported from the live build: two flashes, the blinds
+     close and open, the arena and the foe slide in, then the text box rises and
+     holds the load status.
+
+     Startup blocks the main thread for over a second, and CSS animations are
+     time based: the whole sequence ran to completion inside that freeze with no
+     frames drawn, so nobody ever saw it. Start paused, release on .go. */
+  #loading { position: fixed; inset: 0; z-index: 9; background: #c7e3d1;
+             overflow: hidden; transition: opacity .34s; }
+  #loading.done { opacity: 0; pointer-events: none; }
+  #loading .intro { position: absolute; inset: 0;
+    animation: .14s steps(1) 2 flash; animation-play-state: paused; }
+  @keyframes flash { 0%,49% { filter: none }
+    50%,99% { filter: invert(1) hue-rotate(180deg) } }
+  #loading .blinds { position: absolute; inset: 0; display: grid; pointer-events: none; }
+  #loading .blinds i { background: #2f3a34; transform: scaleX(0); transform-origin: left;
+    animation: .52s cubic-bezier(.4,0,.2,1) both blind; animation-play-state: paused; }
+  #loading .blinds i:nth-child(2n) { transform-origin: right; }
+  #loading .blinds i:nth-child(1) { animation-delay: 0.220s }
+  #loading .blinds i:nth-child(2) { animation-delay: 0.242s }
+  #loading .blinds i:nth-child(3) { animation-delay: 0.264s }
+  #loading .blinds i:nth-child(4) { animation-delay: 0.286s }
+  #loading .blinds i:nth-child(5) { animation-delay: 0.308s }
+  #loading .blinds i:nth-child(6) { animation-delay: 0.330s }
+  #loading .blinds i:nth-child(7) { animation-delay: 0.352s }
+  #loading .blinds i:nth-child(8) { animation-delay: 0.374s }
+  @keyframes blind { 0% { transform: scaleX(0) } 45% { transform: scaleX(1) }
+    55% { transform: scaleX(1) } 100% { transform: scaleX(0) } }
+  /* The sprite is placed to land where the 3D model appears, so the entrance
+     hands over to it: the model measures 183 x 140 px centred at (452, 397) on
+     a 900 x 760 view, and a 224 px sprite box lands 176 x 149 at (447, 387),
+     since the drawn Ditto fills about 79% of its box.
+     Centring is on the `translate` property, leaving `transform` for the
+     entrance animations. */
+  #loading .arena { position: absolute; inset: 0; opacity: 0;
+    animation: .34s ease-out .46s both fadein; animation-play-state: paused; }
+  @keyframes fadein { from { opacity: 0 } to { opacity: 1 } }
+  #loading .pad { position: absolute; left: 50%; top: calc(50% + 84px);
+    translate: -50% -50%; width: 248px; height: 58px; border-radius: 50%;
+    background: radial-gradient(closest-side, #8fc7a4 0, #7bb994 68%, #c7e3d1 100%);
+    box-shadow: 0 6px 14px #4b755f22; transform: scale(.6);
+    animation: .34s cubic-bezier(.2,1.5,.4,1) .48s both padin; animation-play-state: paused; }
+  @keyframes padin { from { transform: scale(.6) } to { transform: scale(1) } }
+  #loading .foe { position: absolute; left: 50%; top: calc(50% + 20px); translate: -50% -50%;
+    width: 224px; height: 224px;
+    background: url(./favicon-0.png) center/contain no-repeat; image-rendering: pixelated;
+    animation: .72s cubic-bezier(.2,.8,.25,1) .46s both foein,
+               1.3s ease-in-out 1.18s infinite bob; animation-play-state: paused; }
+  @keyframes foein {
+    0% { transform: translateX(150%) translateY(-9%) scale(.94,1.05) }
+    62% { transform: translateX(-4%) translateY(0) scale(1.03,.96) }
+    82% { transform: translateX(1.5%) scale(.98,1.03) }
+    100% { transform: translateX(0) scale(1,1) } }
+  @keyframes bob { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-5px) } }
+  #loading .box { position: absolute; left: 50%; bottom: clamp(18px, 5vh, 46px);
+    translate: -50% 0; width: min(430px, 88vw); text-align: left;
+    background: var(--paper); border: 3px solid var(--ink); border-radius: 7px;
+    box-shadow: 0 0 0 3px var(--paper), 0 10px 20px #2f3a3420; padding: 13px 16px 14px;
+    animation: .32s cubic-bezier(.2,1.4,.4,1) .92s both boxin; animation-play-state: paused; }
+  @keyframes boxin { from { translate: -50% 130% } to { translate: -50% 0 } }
+  #loading .box h2 { margin: 0; font: 600 15px/1.25 ui-sans-serif, sans-serif;
+                     letter-spacing: .02em; }
+  #load-message { margin: 7px 0 0; color: #5c6f63; font-size: 11px; letter-spacing: .04em; }
+  #load-message::after { content: "\25bc"; margin-left: 7px; color: var(--ink);
+    animation: .8s steps(1) infinite blink; animation-play-state: paused; }
+  @keyframes blink { 0%,49% { opacity: 1 } 50%,100% { opacity: 0 } }
+  #loading.go .intro, #loading.go .blinds i, #loading.go .arena, #loading.go .pad,
+  #loading.go .foe, #loading.go .box, #loading.go #load-message::after {
+    animation-play-state: running; }
+  /* a 1-in-4096 roll deserves to be noticed. Chunky pixel stars that pop and
+     fade, the way the games do it, and the sprite takes the shiny hue. */
+  #loading.shiny .foe { filter: hue-rotate(-84deg) saturate(1.08); }
+  #loading .stars { position: absolute; left: 50%; top: 50%; width: 300px; height: 300px;
+                    translate: -50% -54%; pointer-events: none; display: none; }
+  #loading.shiny .stars { display: block; }
+  #loading .stars i { position: absolute; background: url(./star.png) center/contain no-repeat;
+    image-rendering: pixelated; opacity: 0;
+    animation: .62s steps(4,end) 2 both pop; animation-play-state: paused; }
+  #loading.go.shiny .stars i { animation-play-state: running; }
+  #loading .stars i:nth-child(1) { left: 4%;  top: 22%; width: 26px; height: 26px; animation-delay: 1.00s }
+  #loading .stars i:nth-child(2) { right: 8%; top: 8%;  width: 18px; height: 18px; animation-delay: 1.16s }
+  #loading .stars i:nth-child(3) { right: 2%; top: 46%; width: 22px; height: 22px; animation-delay: 1.32s }
+  #loading .stars i:nth-child(4) { left: 16%; top: 62%; width: 15px; height: 15px; animation-delay: 1.46s }
+  @keyframes pop { 0% { opacity: 0; transform: scale(.35) }
+    40% { opacity: 1; transform: scale(1) } 70% { opacity: 1; transform: scale(.85) }
+    100% { opacity: 0; transform: scale(.4) } }
+
+  #hud { position: fixed; top: 8px; left: 10px; font: 12px/1.5 ui-monospace, monospace;
+         color: #2f3a22; white-space: pre; pointer-events: none; z-index: 3;
+         text-shadow: 0 1px 0 #ffffff80; display: none; }
+  body.hud #hud { display: block; }
+  body.hud #masthead { display: none; }
+  #fail { position: fixed; inset: 0; z-index: 10; display: none; place-content: center;
+          justify-items: center; gap: 14px; padding: 2rem; text-align: center;
+          font: 14px/1.6 system-ui; color: #2f3a34; background: #c7e3d1; }
+  #fail.shown { display: grid; }
+  #fail pre { margin: 0; max-width: min(560px, 88vw); white-space: pre-wrap;
+              font: 11px/1.6 ui-monospace, monospace; color: #5c6f63; }
+  #retry { border: 0; border-radius: 999px; padding: 9px 20px; cursor: pointer;
+           font: 600 12px/1 ui-sans-serif, sans-serif; letter-spacing: .04em;
+           background: var(--ditto); color: var(--paper); }
+
+  @media (prefers-reduced-motion: reduce) {
+    #loading .intro, #loading .blinds i, #loading .arena, #loading .pad,
+    #loading .foe, #loading .box, #loading .stars i, #load-message::after { animation: none }
+    #loading .blinds i { transform: scaleX(0) }
+    #loading .arena { opacity: 1 } #loading .pad { transform: scale(1) }
+  }
+</style>
+
+<div class="chrome">
+  <div id="masthead">
+    <p class="eyebrow">the transform pok&eacute;mon</p>
+    <button id="name" type="button" title="Read his other name">Ditto<b>.</b></button>
+  </div>
+  <div id="tools">
+    <button id="sound" type="button" aria-pressed="false" title="Sound">
+      <svg viewBox="0 0 24 24"><path d="M4 9v6h3.5L13 19V5L7.5 9H4Z"/>
+        <path id="sound-on" d="M16.5 9.2a4 4 0 0 1 0 5.6M19 6.5a7.6 7.6 0 0 1 0 11"/>
+        <path id="sound-off" d="M17 10l4 4m0-4l-4 4" style="display:none"/></svg>
+    </button>
+    <button id="form" type="button" title="Other form"><i id="form-dot"></i></button>
+    <button id="reset" type="button" title="Put him back">
+      <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v4h-4"/></svg>
+    </button>
+    <button id="about" type="button" title="Credits">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5"/>
+        <path d="M12 7.8v.4"/></svg>
+    </button>
+  </div>
+  <footer id="hint" aria-label="Keyboard controls">
+    <span class="wasd"><kbd>W</kbd><span><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span></span>
+    <span>wander</span>
+    <i class="sep"></i><kbd>space</kbd><span>hold to jump</span>
+    <i class="sep"></i>
+    <svg class="mouse" viewBox="0 0 20 25"><rect x="3.5" y="1.5" width="13" height="21" rx="6.5"/>
+      <path d="M10 5v5"/></svg>
+    <span>orbit &middot; grab</span>
+  </footer>
+  <div id="touch">
+    <div id="stick"><i id="knob"></i></div>
+    <button id="hop" type="button">hop</button>
+  </div>
+</div>
+
+<dialog id="credits">
+  <h2 class="credits-title">Ditto</h2>
+  <ul>
+    <li><span>Ditto</span><em>Pok&eacute;mon / Nintendo, Creatures, Game Freak</em></li>
+    <li><span>The conga, and the dancing sprite</span>
+      <a href="https://matias.me/nsfw/" target="_blank" rel="noreferrer">matias.me/nsfw</a></li>
+    <li><span>Music</span>
+      <a href="https://www.youtube.com/watch?v=54ItEmCnP80" target="_blank" rel="noreferrer">
+        &ldquo;Conga&rdquo; &mdash; Gloria Estefan and Miami Sound Machine</a></li>
+    <li><span>Built by</span>
+      <a href="https://jeramai.github.io" target="_blank" rel="noreferrer">Jeramai Faber</a></li>
+  </ul>
+  <button id="credits-close" type="button" title="Close" autofocus>
+    <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+</dialog>
+
+<div id="loading">
+  <div class="intro">
+    <div class="arena">
+      <div class="pad"></div>
+      <div class="foe"><span class="stars"><i></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="blinds"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="box">
+      <h2>A wild Ditto appeared!</h2>
+      <p id="load-message">Waking the solver</p>
+    </div>
+  </div>
+</div>
+
+<div id="hud"></div>
+<div id="fail">
+  <strong>Ditto could not wake up.</strong>
+  <pre id="fail-detail"></pre>
+  <button id="retry" type="button">Try again</button>
+</div>
