@@ -43,6 +43,7 @@
   .eyebrow[lang="ja"] { text-transform: none; letter-spacing: .06em; font-size: 10px; }
   #name { all: unset; display: block; cursor: pointer; margin-top: -4px;
           -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+          -webkit-tap-highlight-color: transparent;
           font: italic 400 44px/1 Georgia, "Times New Roman", serif;
           letter-spacing: -.055em; color: #453449; text-shadow: 0 1px 0 #ffffff44; }
   #name:hover { opacity: .72; }
@@ -55,7 +56,8 @@
   #tools button { width: 34px; height: 34px; display: grid; place-items: center;
                   border: 0; border-radius: 10px; cursor: pointer; color: var(--ink);
                   background: #fbf8f2b8; backdrop-filter: blur(3px);
-                  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+                  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+                  -webkit-tap-highlight-color: transparent; }
   #tools button:hover { background: var(--paper); }
   #tools button[aria-pressed="true"] { background: var(--ditto); color: var(--paper); }
   #tools svg { width: 17px; height: 17px; fill: none; stroke: currentColor;
@@ -85,7 +87,7 @@
 
   /* --- touch controls: only on a device that has no mouse ---------------- */
   #touch { display: none; -webkit-user-select: none; user-select: none;
-           -webkit-touch-callout: none; }
+           -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
   body.touch #touch { display: block; }
   #stick { position: absolute; left: 22px; bottom: calc(26px + var(--safe-b));
            width: 116px; height: 116px; border-radius: 50%;
@@ -126,6 +128,7 @@
   #credits :focus-visible, #tools :focus-visible, #name:focus-visible {
     outline: 2px solid var(--ditto); outline-offset: 2px; border-radius: 6px; }
   #credits :focus:not(:focus-visible) { outline: none; }
+  #hop:focus-visible { outline: 2px solid var(--ditto); outline-offset: 2px; }
   #credits-close svg { width: 15px; height: 15px; fill: none; stroke: currentColor;
                        stroke-width: 1.8; stroke-linecap: round; }
 
