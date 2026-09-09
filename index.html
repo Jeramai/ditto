@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<script type="module" crossorigin src="./assets/index-BSQIerMp.js"></script>
+<script type="module" crossorigin src="./assets/index-DZgJfSgY.js"></script>
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -59,7 +59,11 @@
   #tools svg { width: 17px; height: 17px; fill: none; stroke: currentColor;
                stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
   #form-dot { width: 13px; height: 13px; border-radius: 50%; background: var(--ditto);
-              box-shadow: 0 0 0 1.5px #ffffffcc inset; }
+              box-shadow: 0 0 0 1.5px #ffffffcc inset; transition: background .28s ease; }
+  #form.turning #form-dot { animation: .58s ease-out turn; }
+  @keyframes turn { 0% { box-shadow: 0 0 0 1.5px #ffffffcc inset, 0 0 0 0 #fff4c0e0 }
+    55% { box-shadow: 0 0 0 1.5px #ffffffcc inset, 0 0 0 7px #fff4c000 }
+    100% { box-shadow: 0 0 0 1.5px #ffffffcc inset, 0 0 0 0 #fff4c000 } }
 
   /* Key caps rather than a sentence, and it stays: it is the only place the
      controls are written down. Hidden on touch, where the pad speaks for itself. */
@@ -168,7 +172,6 @@
   @keyframes padin { from { transform: scale(.6) } to { transform: scale(1) } }
   #loading .foe { position: absolute; left: 50%; top: calc(50% + 20px); translate: -50% -50%;
     width: 224px; height: 224px;
-    background: url(./favicon-0.png) center/contain no-repeat; image-rendering: pixelated;
     animation: .72s cubic-bezier(.2,.8,.25,1) .46s both foein,
                1.3s ease-in-out 1.18s infinite bob; animation-play-state: paused; }
   @keyframes foein {
@@ -177,6 +180,9 @@
     82% { transform: translateX(1.5%) scale(.98,1.03) }
     100% { transform: translateX(0) scale(1,1) } }
   @keyframes bob { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-5px) } }
+  /* Its own layer, because the shiny hue rotate must not reach the stars. */
+  #loading .sprite { position: absolute; inset: 0; image-rendering: pixelated;
+    background: url(./favicon-0.png) center/contain no-repeat; }
   #loading .box { position: absolute; left: 50%; bottom: clamp(18px, 5vh, 46px);
     translate: -50% 0; width: min(430px, 88vw); text-align: left;
     background: var(--paper); border: 3px solid var(--ink); border-radius: 7px;
@@ -194,7 +200,7 @@
     animation-play-state: running; }
   /* a 1-in-4096 roll deserves to be noticed. Chunky pixel stars that pop and
      fade, the way the games do it, and the sprite takes the shiny hue. */
-  #loading.shiny .foe { filter: hue-rotate(-84deg) saturate(1.08); }
+  #loading.shiny .sprite { filter: hue-rotate(-84deg) saturate(1.08); }
   #loading .stars { position: absolute; left: 50%; top: 50%; width: 300px; height: 300px;
                     translate: -50% -54%; pointer-events: none; display: none; }
   #loading.shiny .stars { display: block; }
@@ -228,6 +234,7 @@
   @media (prefers-reduced-motion: reduce) {
     #loading .intro, #loading .blinds i, #loading .arena, #loading .pad,
     #loading .foe, #loading .box, #loading .stars i, #load-message::after { animation: none }
+    #form.turning #form-dot { animation: none }
     #loading .blinds i { transform: scaleX(0) }
     #loading .arena { opacity: 1 } #loading .pad { transform: scale(1) }
   }
@@ -291,7 +298,7 @@
   <div class="intro">
     <div class="arena">
       <div class="pad"></div>
-      <div class="foe"><span class="stars"><i></i><i></i><i></i><i></i></span></div>
+      <div class="foe"><i class="sprite"></i><span class="stars"><i></i><i></i><i></i><i></i></span></div>
     </div>
     <div class="blinds"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <div class="box">
