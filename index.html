@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<script type="module" crossorigin src="./assets/index-DZgJfSgY.js"></script>
+<script type="module" crossorigin src="./assets/index-Bwd87vVk.js"></script>
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -42,6 +42,7 @@
              color: #3f4a44; text-shadow: 0 1px 0 #ffffff55; }
   .eyebrow[lang="ja"] { text-transform: none; letter-spacing: .06em; font-size: 10px; }
   #name { all: unset; display: block; cursor: pointer; margin-top: -4px;
+          -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
           font: italic 400 44px/1 Georgia, "Times New Roman", serif;
           letter-spacing: -.055em; color: #453449; text-shadow: 0 1px 0 #ffffff44; }
   #name:hover { opacity: .72; }
@@ -53,7 +54,8 @@
            display: flex; gap: 6px; }
   #tools button { width: 34px; height: 34px; display: grid; place-items: center;
                   border: 0; border-radius: 10px; cursor: pointer; color: var(--ink);
-                  background: #fbf8f2b8; backdrop-filter: blur(3px); }
+                  background: #fbf8f2b8; backdrop-filter: blur(3px);
+                  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
   #tools button:hover { background: var(--paper); }
   #tools button[aria-pressed="true"] { background: var(--ditto); color: var(--paper); }
   #tools svg { width: 17px; height: 17px; fill: none; stroke: currentColor;
@@ -82,7 +84,8 @@
                     stroke-width: 1.4; }
 
   /* --- touch controls: only on a device that has no mouse ---------------- */
-  #touch { display: none; }
+  #touch { display: none; -webkit-user-select: none; user-select: none;
+           -webkit-touch-callout: none; }
   body.touch #touch { display: block; }
   #stick { position: absolute; left: 22px; bottom: calc(26px + var(--safe-b));
            width: 116px; height: 116px; border-radius: 50%;
