@@ -47,6 +47,21 @@ and the baked model are checked in.
 `SCALE` in `make_model.py` is the only size knob for Ditto. Every face measurement is a ratio of
 the body, so the eyes and the mouth move with it.
 
+## Deploying
+
+`Jeramai/ditto` holds only the built output. GitHub Pages serves that repo's `main` at the site
+root, so a release is `engine/dist` copied in and pushed:
+
+```bash
+cd engine && npx vite build     # writes engine/dist
+# then copy the contents of engine/dist into a checkout of Jeramai/ditto,
+# keep .nojekyll, and push main
+```
+
+That repo has no source and no history of it; this folder is the source and was not in git until
+2026-09-12. Worth fixing: put this folder on `main` of the same repo and let an Action publish
+`engine/dist` to `gh-pages`, so one repo carries both and the copy step goes away.
+
 ## The body
 
 - **The mesh is the 3D Ditto model.** `make_model.py` bakes the body mesh from `ditto2.glb`,
