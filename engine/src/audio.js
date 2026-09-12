@@ -8,24 +8,29 @@ export const BEAT = 0.4902;
 const VOLUME = 0.5;
 const FRAMES = 4;      // one favicon frame per quarter beat
 
-export function createAudio(base = './') {
+export function createAudio(base = './', sprite = null) {
   const el = new Audio(`${base}konga.mp3`);
   el.loop = true;
   el.volume = VOLUME;
   el.preload = 'auto';
 
   const link = document.querySelector('link[rel="icon"]');
-  const icons = [];
-  for (let i = 0; i < FRAMES; i++) icons.push(`${base}favicon-${i}.png`);
-  let shown = -1;
+  let shown = -1, shiny = false;
+  // no fallback to the png: before the frames decode the markup's icon is
+  // already right, and asking for the file again is a request for nothing
+  const paint = (f) => {
+    const href = sprite?.href(f, shiny);
+    if (link && href) link.href = href;
+  };
+  sprite?.onReady(() => paint(shown === -1 ? 0 : shown));
   const spin = (time) => {
     if (!link) return;
     const f = Math.floor(time / (BEAT / FRAMES)) % FRAMES;
     if (f === shown) return;
     shown = f;
-    link.href = icons[f];
+    paint(f);
   };
-  const rest = () => { if (link && shown !== -1) { shown = -1; link.href = icons[0]; } };
+  const rest = () => { if (link && shown !== -1) { shown = -1; paint(0); } };
 
   let muted = false;
   return {
@@ -37,6 +42,9 @@ export function createAudio(base = './') {
     spin,
     get time() { return el.currentTime; },
     get playing() { return !el.paused; },
+    // the tab shows your Ditto, so the icon follows the form and not the parade
+    set shiny(v) { shiny = !!v; paint(shown === -1 ? 0 : shown); },
+    get shiny() { return shiny; },
     get muted() { return muted; },
     set muted(v) {
       muted = !!v;

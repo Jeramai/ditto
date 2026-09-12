@@ -11,6 +11,7 @@ import { createConga } from './conga.js';
 import { createDisco } from './disco.js';
 import { createBreath } from './breath.js';
 import { createAudio } from './audio.js';
+import { createSprite } from './sprite.js';
 import { createUi, COARSE, REDUCED } from './ui.js';
 import { createTransform } from './transform.js';
 import { createEyes } from './eyes.js';
@@ -134,8 +135,9 @@ async function main() {
   const locomotion = createLocomotion(body);
   const conga = createConga(locomotion, body);
   const breath = createBreath(body);
-  const audio = createAudio('./');
-  const disco = createDisco(scene, world, { reduced: REDUCED });
+  const sprite = createSprite('./');
+  const audio = createAudio('./', sprite);
+  const disco = createDisco(scene, world, { reduced: REDUCED, sprite });
 
   const putBack = () => {
     body.x.set(restPose);
@@ -147,6 +149,7 @@ async function main() {
   let entered = false;
   ui.bind({
     onForm: (hex, form) => {
+      audio.shiny = form === 'shiny';
       if (entered) transform.sweep(hex, form === 'shiny'); else transform.set(hex);
     },
     onReset: putBack,
@@ -345,7 +348,7 @@ async function main() {
   // fresh nineteen-property object 120 times a second for nothing; the live
   // numbers are getters, so it stays current without being rebuilt.
   globalThis.__engine = { body, skin, cpuSkin, gpuSkin, renderer, mesh, geometry, camera, raycaster, orbit,
-    locomotion, conga, disco, breath, audio, world, model, scene, ui, transform, eyes,
+    locomotion, conga, disco, breath, audio, sprite, world, model, scene, ui, transform, eyes,
     createSoftBody, colourElements, verifyColouring,
     get fps() { return fps; }, get simMs() { return simMs; },
     get skinMs() { return skinMs; }, get shownSubsteps() { return shownSubsteps; },

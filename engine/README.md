@@ -49,7 +49,8 @@ On a touch device a stick and a hop button appear instead.
 | `conga.js` | the sprite's bounce, the alternating arm wave, the turn to camera |
 | `disco.js` | the beat-driven colour flash, the tint on the lights, the parade of sprites |
 | `breath.js` | the idle rise and fall |
-| `audio.js` | the track, the beat, the favicon frames |
+| `audio.js` | the track, the beat, the favicon spin |
+| `sprite.js` | the four pixel frames in both forms, for the parade and for the tab |
 | `ui.js` | name, form, sound, reset, credits, the entrance, the touch pad |
 
 The asset comes from `../make_model.py`, which writes straight into `public/`: 728 cage nodes,
@@ -103,10 +104,18 @@ Closing the same turn inside the 0.05 s tap would need rate 92, which is the −
 
 **A crowd sprite can roll shiny.** The strip is four flat colours and the body is a single
 `#b860e0`, so one pass over the decoded pixels swaps it for the shiny form's blue and leaves the
-outline and the highlight alone — no second asset. It is rolled per sprite at `shinyOdds`, 64, not
-the real 4096, which at two spawns a second would show one about every 32 s of dancing instead of
-never. The roll is independent of the player's own form, so the parade is ordinary Dittos with a
-rare one among them.
+outline and the highlight alone — 391 body pixels change and the 86 outline and 7 highlight ones
+do not. No second asset. It is rolled per sprite at `shinyOdds`, 64, not the real 4096, which at
+two spawns a second would show one about every 32 s of dancing instead of never. The roll is
+independent of the player's own form, so the parade is ordinary Dittos with a rare one among them.
+
+**The tab follows your form, and stops re-fetching a png.** `sprite.js` bakes all eight frames
+once and hands out a canvas for the parade and a data URL for the `<link>`, so `audio.js` and
+`disco.js` share one copy instead of keeping their own. The icon is the shiny blue whenever the
+body is, switching on the form button, and the parade's rare shiny is rolled separately. The old
+code pointed the link back at `favicon-<n>.png`, which Chrome re-requested every 124 ms — eight
+times a second for as long as the music played. There is no fallback to those files: before they
+decode the markup's icon is already correct, and asking again is a request for nothing.
 
 **The disco's blend has to sit on the fixed element itself.** `position: fixed` makes an isolated
 group, so a `mix-blend-mode` on a child of a fixed wrapper blends against transparency and the
