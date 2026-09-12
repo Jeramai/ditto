@@ -1,0 +1,6 @@
+__pycache__/
+dist/
+favicon_preview.png
+grass_preview.png
+tile_preview.png
+node_modules/

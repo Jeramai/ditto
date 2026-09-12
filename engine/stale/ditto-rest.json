@@ -1,0 +1,18 @@
+{
+ "bakedFor": {
+  "shear": 600,
+  "bulk": 65000,
+  "gravity": 9.81,
+  "substep": 0.0020833333333333333,
+  "iterations": 2
+ },
+ "rounds": 26,
+ "keptRound": 16,
+ "relax": 0.5,
+ "nodeCount": 728,
+ "residual": {
+  "worst_mm": 1.872,
+  "mean_mm": 0.89
+ },
+ "sourceHash": "c34836f03835c578ff5686fb4511ad971c5c269dad049ab03d075155b081dad3"
+}
