@@ -1,8 +1,8 @@
 # Ditto, our own engine
 
-The live site at [jeramai.github.io/ditto](https://jeramai.github.io/ditto/) is a patch over
-someone else's bundle. This is the replacement: our own app layer on three.js (MIT), with our
-own soft-body solver, skinning, world and interface. Nothing here is patched into anything.
+This is the site at [jeramai.github.io/ditto](https://jeramai.github.io/ditto/): our own app layer
+on three.js (MIT), with our own soft-body solver, skinning, world and interface. Nothing here is
+patched into anything. It replaced a patch over someone else's bundle, and none of that is left.
 
 ```bash
 cd engine
@@ -52,7 +52,8 @@ On a touch device a stick and a hop button appear instead.
 | `audio.js` | the track, the beat, the favicon frames |
 | `ui.js` | name, form, sound, reset, credits, the entrance, the touch pad |
 
-The asset comes from `../make_model.py`: 728 cage nodes, 2,832 tets, 8,194 surface vertices,
+The asset comes from `../make_model.py`, which writes straight into `public/`: 728 cage nodes,
+2,832 tets, 8,194 surface vertices,
 1,600 contact candidates, plus `faceTag` for the eyes and `mouthTag` for the mouth. The sky
 comes from `../make_sky.py` and the field from `../make_grass.py`.
 
