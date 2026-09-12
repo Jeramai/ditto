@@ -11,7 +11,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).parent
 SRC = ROOT / "original/konga-source.mp3"
-OUT = ROOT / "assets/konga.mp3"
+OUT = ROOT / "engine/public/konga.mp3"
 
 DOWNBEAT, BEAT, BEATS = 0.380, 0.4902, 128     # measured by onset autocorrelation
 BITRATE = "72k"

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Write assets/star.png : the chunky shiny sparkle, drawn as pixels.
+"""Write engine/public/star.png : the chunky shiny sparkle, drawn as pixels.
 
 The fill is hand-plotted; the outline is derived from it, so the shape stays a
 single source of truth.
@@ -9,7 +9,7 @@ import struct
 import zlib
 
 ROOT = pathlib.Path(__file__).parent
-OUT = ROOT / "assets/star.png"
+OUT = ROOT / "engine/public/star.png"
 
 FILL = (0xF8, 0xDE, 0x74)
 CORE = (0xFF, 0xF4, 0xC0)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Write assets/sky.exr : a small equirectangular daylight probe.
+"""Write engine/public/sky.exr : a small equirectangular daylight probe.
 
 It replaces the shipped 5.9 MB nursery-room HDR. The runtime derives the sun
 direction from the brightest part of this image, so the disc sits at the same
@@ -13,7 +13,7 @@ import zlib
 import sys
 
 ROOT = pathlib.Path(__file__).parent
-OUT = ROOT / "assets/sky.exr"
+OUT = ROOT / "engine/public/sky.exr"
 
 W, H = 256, 128
 # The direction the room probe resolved to, read straight off the running app,
