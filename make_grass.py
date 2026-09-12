@@ -14,6 +14,10 @@ import subprocess
 import sys
 import zlib
 
+ROOT = pathlib.Path(__file__).parent
+PUBLIC = ROOT / "engine/public"
+BUILD = ROOT / "build"
+
 TILES, TILE = 64, 16
 SIZE = TILES * TILE
 
@@ -153,7 +157,8 @@ def png(path, grid, scale=1):
     print(f"{path} {w}x{h}")
 
 
-png("assets/grass_tiles.png", px)
+BUILD.mkdir(exist_ok=True)
+png(str(BUILD / "grass_tiles.png"), px)
 if "--preview" in sys.argv:
     png("grass_preview.png", px, scale=4)
     png("tile_preview.png", [[c or BASE for c in row] for row in MOTIF], scale=14)
@@ -182,22 +187,21 @@ def tuft_png(path):
 
 
 import pathlib
-tuft_png("assets/grass_tuft.png")
+tuft_png(str(BUILD / "grass_tuft.png"))
 
 
-json.dump({"tiles": TILES, "rows": LAYOUT}, open("grass_layout.json", "w"))
+json.dump({"tiles": TILES, "rows": LAYOUT}, open(PUBLIC / "grass_layout.json", "w"))
 print(f"grass_layout.json ({TILES}x{TILES}, "
       f"{sum(r.count('g') for r in LAYOUT) / (TILES * TILES) * 100:.0f}% tufts)")
 
 
-def webp(src):
+def webp(src, out):
     """Lossless webp: the pixel art must survive exactly, and it still wins."""
-    out = pathlib.Path(src).with_suffix(".webp")
     subprocess.run(["cwebp", "-quiet", "-lossless", "-exact", str(src), "-o", str(out)],
                    check=True)
     print(f"{out.name}: {out.stat().st_size / 1024:.1f} KB "
           f"(png was {pathlib.Path(src).stat().st_size / 1024:.1f} KB)")
 
 
-webp("assets/grass_tiles.png")
-webp("assets/grass_tuft.png")
+webp(BUILD / "grass_tiles.png", PUBLIC / "grass_tiles.webp")
+webp(BUILD / "grass_tuft.png", PUBLIC / "grass_tuft.webp")

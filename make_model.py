@@ -6,7 +6,7 @@ barycentric weights; the surface is rebuilt from the cage every frame. So the
 mesh can be swapped without touching the solver: morph the cage onto Ditto's
 volume (the slice field from make_shape.py), place the model mesh inside it,
 bind every vertex to its containing tet, and regenerate the per-vertex arrays
-the kernel reads. Writes assets/ditto-model.bin and ditto-model.json.
+the kernel reads. Writes engine/public/ditto-model.bin and ditto-model.json.
 """
 import json
 import math
@@ -20,8 +20,8 @@ ROOT = pathlib.Path(__file__).parent
 GLB_PATH = str(ROOT / "ditto2.glb")
 SRC_BIN = ROOT / "original/jelly-baby.bin"
 SRC_MANIFEST = ROOT / "original/manifest.json"
-OUT_BIN = ROOT / "assets/ditto-model.bin"
-OUT_MANIFEST = ROOT / "ditto-model.json"
+OUT_BIN = ROOT / "engine/public/ditto-model.bin"
+OUT_MANIFEST = ROOT / "engine/public/ditto-model.json"
 
 SCALE = 0.58            # the whole animal
 PAL_TONGUE, PAL_BODY, PAL_SHADE, PAL_MOUTH = 0, 1, 2, 3
@@ -358,7 +358,7 @@ for t, v, b in zip(tet_list, volumes, before):
     new_volumes.append(v * r)
 # --- the model mesh, placed inside the morphed cage ----------------------------
 _uv_tris = glb_load(GLB_PATH, 2, want_uv=True)            # Object_2 = body, y-up
-_tw, _th, PALETTE, _rows = read_indexed_png(str(ROOT / "assets/ditto-skin.png"))
+_tw, _th, PALETTE, _rows = read_indexed_png(str(ROOT / "ditto-skin.png"))
 
 def _palette_at(uv):
     # glTF puts v=0 at the top of the image, so no flip here. With the flip the

@@ -7,9 +7,12 @@ paletted PNG, so decoding it means inflate, unfilter, then unpack the
 indices. Each 33x29 frame is padded to a square and written as RGBA.
 """
 import base64
+import pathlib
 import struct
 import sys
 import zlib
+
+PUBLIC = pathlib.Path(__file__).parent / "engine/public"
 
 STRIP = (
     "iVBORw0KGgoAAAANSUhEUgAAAIQAAAAdAgMAAAAWQyy/AAAADFBMVEX///+4YOA4ODj4+PhASPNe"
@@ -106,7 +109,7 @@ for f in range(FRAMES):
             i = rows[y][f * fw + x]
             if i not in clear:
                 grid[top + y][left + x] = (*palette[i], 255)
-    total += png(f"assets/favicon-{f}.png", grid)
+    total += png(str(PUBLIC / f"favicon-{f}.png"), grid)
 print(f"{FRAMES} frames of {side}x{side} from a {sw}x{sh} strip, {total} bytes")
 
 if "--preview" in sys.argv:
