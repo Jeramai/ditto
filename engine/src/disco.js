@@ -1,5 +1,4 @@
 import { BEAT } from './audio.js';
-import { FORMS } from './ui.js';
 
 export const DISCO = {
   ease: 3.4,             // 1/s onto the lit state
@@ -17,13 +16,12 @@ export const DISCO = {
 };
 
 const CELL = 33;         // the padded square make_favicon.py writes
-const BODY = [0xb8, 0x60, 0xe0];   // the strip's only body colour, so the swap is exact
 
 const pick = ([lo, hi]) => lo + Math.random() * (hi - lo);
 
 export function createDisco(scene, world, options = {}) {
   const P = { ...DISCO, ...options };
-  const base = P.base ?? './';
+  const sprite = P.sprite;
   const root = document.documentElement;
   const lights = document.getElementById('disco');
   const canvas = document.getElementById('crowd');
@@ -36,32 +34,6 @@ export function createDisco(scene, world, options = {}) {
   const fogBase = scene.fog.color.clone();
   const envBase = scene.environmentIntensity;
   const lit = sunBase.clone();
-
-  const shinyHex = FORMS.shiny.hex;
-  const sr = (shinyHex >> 16) & 255, sg = (shinyHex >> 8) & 255, sb = shinyHex & 255;
-  const toShiny = (img) => {
-    const c = document.createElement('canvas');
-    c.width = img.naturalWidth; c.height = img.naturalHeight;
-    const g = c.getContext('2d');
-    g.drawImage(img, 0, 0);
-    const d = g.getImageData(0, 0, c.width, c.height), px = d.data;
-    for (let i = 0; i < px.length; i += 4) {
-      if (px[i] !== BODY[0] || px[i + 1] !== BODY[1] || px[i + 2] !== BODY[2]) continue;
-      px[i] = sr; px[i + 1] = sg; px[i + 2] = sb;
-    }
-    g.putImageData(d, 0, 0);
-    return c;
-  };
-
-  const sprites = [], shinies = [];
-  let loaded = 0;
-  for (let i = 0; i < P.frames; i++) {
-    const img = new Image();
-    // a failed recolour must not hold the parade back, so it still counts as loaded
-    img.addEventListener('load', () => { try { shinies[i] = toShiny(img); } catch {} loaded++; });
-    img.src = `${base}favicon-${i}.png`;
-    sprites.push(img);
-  }
 
   // a fixed pool, because nothing may allocate in the frame loop
   const pool = [];
@@ -134,7 +106,7 @@ export function createDisco(scene, world, options = {}) {
     scene.environmentIntensity = envBase + (P.env - envBase) * level;
     root.style.setProperty('--disco-level', level * P.ceiling);
 
-    const ready = loaded >= P.frames;
+    const ready = sprite.ready;
     const fi = Math.floor(phase / (BEAT / P.frames)) % P.frames;
     ctx.clearRect(0, 0, w, h);
     for (let i = 0; i < pool.length; i++) {
@@ -144,8 +116,7 @@ export function createDisco(scene, world, options = {}) {
       if (e.x > w || e.x <= -e.size) { e.live = false; continue; }
       if (!ready) continue;
       ctx.globalAlpha = e.alpha;
-      ctx.drawImage((e.shiny && shinies[fi]) || sprites[fi],
-                    Math.round(e.x), Math.round(e.y), e.size, e.size);
+      ctx.drawImage(sprite.frame(fi, e.shiny), Math.round(e.x), Math.round(e.y), e.size, e.size);
     }
     ctx.globalAlpha = 1;
   };
