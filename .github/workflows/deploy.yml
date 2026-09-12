@@ -1,0 +1,48 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: engine/package-lock.json
+
+      - run: npm ci
+        working-directory: engine
+
+      - run: npx vite build
+        working-directory: engine
+
+      # a failed build leaves the last good gh-pages up instead of taking the site down
+      - name: Publish engine/dist to gh-pages
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch --depth=1 origin gh-pages
+          git worktree add "$RUNNER_TEMP/pages" origin/gh-pages
+          find "$RUNNER_TEMP/pages" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -R engine/dist/. "$RUNNER_TEMP/pages/"
+          touch "$RUNNER_TEMP/pages/.nojekyll"
+          cd "$RUNNER_TEMP/pages"
+          git add -A
+          if git diff --cached --quiet; then echo "no change to publish"; exit 0; fi
+          git commit -q -m "build: ${GITHUB_SHA::7}"
+          git push origin HEAD:gh-pages
